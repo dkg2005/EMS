@@ -1,0 +1,359 @@
+<app-header></app-header>
+<div>
+  <app-loader></app-loader>
+
+  <!-- Notification -->
+  <div class="notification-container">
+    <div
+      class="notification"
+      [ngClass]="[notificationVariant, notificationVisible ? 'show' : '']"
+    >
+      <div class="notification-body">{{ notificationMessage }}</div>
+      <div class="notification-icon">&#10003;</div>
+    </div>
+  </div>
+  <!-- form -->
+  <form #f="ngForm" (ngSubmit)="submit(f)" class="form-card">
+    <div class="form-header">
+      <h3>{{ editing ? "Update Employee" : "Create Employee" }}</h3>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Name <span class="required">*</span></label>
+        <input
+          class="form-control"
+          name="name"
+          [(ngModel)]="form.name"
+          placeholder="Enter employee name"
+        />
+        <small class="error" *ngIf="errors.name">{{ errors.name }}</small>
+      </div>
+
+      <div class="col">
+        <label>Email <span class="required">*</span></label>
+        <input
+          class="form-control"
+          name="email"
+          [(ngModel)]="form.email"
+          placeholder="Enter employee email"
+          type="email"
+        />
+        <small class="error" *ngIf="errors.email">{{ errors.email }}</small>
+      </div>
+
+      <div class="col" *ngIf="!editing">
+        <label>Password <span class="required">*</span></label>
+        <input
+          class="form-control"
+          name="password"
+          [(ngModel)]="form.password"
+          placeholder="Min 8 characters"
+          type="password"
+        />
+        <small class="error" *ngIf="errors.password">{{
+          errors.password
+        }}</small>
+      </div>
+
+      <div class="col">
+        <label>Department <span class="required">*</span></label>
+        <div class="select-wrapper">
+          <select
+            class="form-control"
+            name="departmentId"
+            [(ngModel)]="form.departmentId"
+          >
+            <option [ngValue]="null" selected>Select Department</option>
+            <option *ngFor="let d of departments" [ngValue]="d.id">
+              {{ d.name }}
+            </option>
+          </select>
+        </div>
+        <small class="error" *ngIf="errors.departmentId">{{
+          errors.departmentId
+        }}</small>
+      </div>
+
+      <div class="col">
+        <label>Phone <span class="required">*</span></label>
+        <input
+          class="form-control"
+          name="phone"
+          [(ngModel)]="form.phone"
+          placeholder="e.g. 9876543210"
+        />
+        <small class="error" *ngIf="errors.phone">{{ errors.phone }}</small>
+      </div>
+
+      <div class="col">
+        <label>Date of Joining<span class="required">*</span></label>
+        <input
+          type="date"
+          class="form-control"
+          name="dateOfJoining"
+          [(ngModel)]="form.dateOfJoining"
+          required="true"
+        />
+      </div>
+
+      <div class="col">
+        <label>Status</label>
+        <div class="select-wrapper">
+          <select class="form-control" name="status" [(ngModel)]="form.status">
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" type="submit">
+        {{ editing ? "Update" : "Create" }}
+      </button>
+      <button class="btn btn-light" type="button" (click)="reset()">
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <div class="table-header">
+      <h3>Employees List</h3>
+    </div>
+
+    <div class="table-controls">
+      <div class="left entries-control">
+        <div class="entries-box">
+          <select
+            class="entries-select"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="onPageSizeChange($event)"
+          >
+            <option *ngFor="let opt of entriesOptions" [ngValue]="opt">
+              {{ opt }}
+            </option>
+          </select>
+        </div>
+        <div class="entries-text">Entries per page</div>
+      </div>
+
+      <div class="right">
+        <input
+          class="global-search"
+          type="text"
+          placeholder="Search..."
+          [(ngModel)]="globalFilter"
+          (ngModelChange)="onGlobalFilterChange($event)"
+        />
+      </div>
+    </div>
+
+    <div class="d-flex px-1">
+      <table class="table m-3">
+        <thead>
+          <tr>
+            <th style="width: 60px">S.No</th>
+
+            <th (click)="activateColumnSearch('name')">
+              <ng-container *ngIf="activeSearchColumn !== 'name'"
+                >Name</ng-container
+              >
+              <div class="header-search" *ngIf="activeSearchColumn === 'name'">
+                <input
+                  type="text"
+                  placeholder="Search name"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('name', $event)"
+                  [value]="filters.name"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('name'); $event.stopPropagation()"
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th (click)="activateColumnSearch('email')">
+              <ng-container *ngIf="activeSearchColumn !== 'email'"
+                >Email</ng-container
+              >
+              <div class="header-search" *ngIf="activeSearchColumn === 'email'">
+                <input
+                  type="text"
+                  placeholder="Search email"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('email', $event)"
+                  [value]="filters.email"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('email'); $event.stopPropagation()"
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th (click)="activateColumnSearch('phone')">
+              <ng-container *ngIf="activeSearchColumn !== 'phone'"
+                >Phone</ng-container
+              >
+              <div class="header-search" *ngIf="activeSearchColumn === 'phone'">
+                <input
+                  type="text"
+                  placeholder="Search phone"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('phone', $event)"
+                  [value]="filters.phone"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('phone'); $event.stopPropagation()"
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th (click)="activateColumnSearch('department')">
+              <ng-container *ngIf="activeSearchColumn !== 'department'"
+                >Department</ng-container
+              >
+              <div
+                class="header-search"
+                *ngIf="activeSearchColumn === 'department'"
+              >
+                <input
+                  type="text"
+                  placeholder="Search dept"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('department', $event)"
+                  [value]="filters.department"
+                />
+                <span
+                  class="clear"
+                  (click)="
+                    clearColumnSearch('department'); $event.stopPropagation()
+                  "
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th (click)="activateColumnSearch('doj')">
+              <ng-container *ngIf="activeSearchColumn !== 'doj'"
+                >Date Of Joining</ng-container
+              >
+              <div class="header-search" *ngIf="activeSearchColumn === 'doj'">
+                <input
+                  type="text"
+                  placeholder="Search date..."
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('doj', $event)"
+                  [value]="filters.doj"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('doj'); $event.stopPropagation()"
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th (click)="activateColumnSearch('status')">
+              <ng-container *ngIf="activeSearchColumn !== 'status'"
+                >Status</ng-container
+              >
+              <div
+                class="header-search"
+                *ngIf="activeSearchColumn === 'status'"
+              >
+                <input
+                  type="text"
+                  placeholder="Search status"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('status', $event)"
+                  [value]="filters.status"
+                />
+                <span
+                  class="clear"
+                  (click)="
+                    clearColumnSearch('status'); $event.stopPropagation()
+                  "
+                  >✕</span
+                >
+              </div>
+            </th>
+
+            <th style="width: 140px">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let e of pagedEmployeesList; let i = index">
+            <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+            <td>{{ e.name }}</td>
+            <td>{{ e.email }}</td>
+            <td>{{ e.phone || "-" }}</td>
+            <td>{{ getDeptName(e.department_id) }}</td>
+            <td>{{ e.date_of_joining || "-" }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  active: e.status === 'ACTIVE',
+                  inactive: e.status === 'INACTIVE'
+                }"
+              >
+                {{ e.status }}
+              </span>
+            </td>
+
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-sm btn-edit" (click)="edit(e)">
+                  Edit
+                </button>
+                <button
+                  class="btn btn-sm btn-delete ms-2"
+                  (click)="softDelete(e)"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredEmployees.length === 0">
+            <td colspan="7" class="empty">No employees found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination-wrapper mt-3 me-3 mb-3">
+      <button class="page-btn" [disabled]="page === 1" (click)="prevPage()">
+        «
+      </button>
+
+      <button
+        class="page-number"
+        *ngFor="let p of pageNumbers"
+        [class.active]="p === page"
+        (click)="setPage(p)"
+      >
+        {{ p }}
+      </button>
+
+      <button
+        class="page-btn"
+        [disabled]="page === totalPages"
+        (click)="nextPage()"
+      >
+        »
+      </button>
+    </div>
+  </div>
+</div>

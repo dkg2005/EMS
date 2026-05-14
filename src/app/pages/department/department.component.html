@@ -1,0 +1,307 @@
+<!-- Department page template
+  - Shows a form to create/update departments
+  - Lists existing departments with filters, pagination and actions
+  Beginners: the template uses `[(ngModel)]` to bind form fields to the component.
+-->
+  <app-header></app-header>
+<div>
+  <div class="notification-container">
+    <div
+      class="notification"
+      [ngClass]="[notificationVariant, notificationVisible ? 'show' : '']"
+      [attr.aria-hidden]="!notificationVisible"
+    >
+      <div class="notification-body">{{ notificationMessage }}</div>
+      <div class="notification-icon">&#10003;</div>
+    </div>
+  </div>
+  <app-loader></app-loader>
+  <!-- <h2 class="page-title">Department Management</h2> -->
+  <!-- here ng form below is the angular NgForm directive  -->
+  <form #f="ngForm" (ngSubmit)="submit(f)" class="form-card">
+    <div class="form-header">
+      <h3>Department Management</h3>
+      <!-- <span class="hint">Fill in the details and click Save</span> -->
+    </div>
+
+    <div class="row">
+      <div class="col col-name">
+        <label>Name <span class="required" aria-hidden="true">*</span></label>
+        <input
+          class="form-control"
+          type="text"
+          name="name"
+          [(ngModel)]="form.name"
+          aria-required="true"
+          placeholder="e.g. Engineering, HR"
+        />
+        @if (errors.name) {
+          <small class="error">{{ errors.name }}</small>
+        }
+      </div>
+
+      <div class="col">
+        <label>Size <span class="required" aria-hidden="true">*</span></label>
+        <input
+          class="form-control"
+          type="number"
+          name="size"
+          [(ngModel)]="form.size"
+          aria-required="true"
+          placeholder="e.g. 25"
+        />
+        <small class="error" *ngIf="errors.size">{{ errors.size }}</small>
+      </div>
+
+      <div class="col">
+        <label>Status <span class="required" aria-hidden="true">*</span></label>
+        <select
+          class="form-control"
+          name="status"
+          [(ngModel)]="form.status"
+          aria-required="true"
+        >
+          <option value="" disabled selected hidden>Choose status</option>
+          <option selected value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+        <!-- <small class="error" *ngIf="errors.status">{{ errors.status }}</small> -->
+      </div>
+
+      <div class="col col-desc">
+        <label>Description</label>
+        <textarea
+          class="form-control"
+          name="description"
+          [(ngModel)]="form.description"
+          rows="1"
+          placeholder="Enter the description.."
+        >
+        </textarea>
+        <small class="error" *ngIf="errors.description">{{
+          errors.description
+        }}</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" type="submit">
+        {{ editing ? "Update" : "Create" }}
+      </button>
+
+      <button class="btn btn-light" type="button" (click)="reset()">
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <!-- LIST -->
+  <div class="table-wrapper">
+    <div class="table-header">
+      <h3>Departments List</h3>
+    </div>
+
+    <!-- Controls: Entries per page (upper-left) -->
+    <div class="table-controls">
+      <div class="left entries-control">
+        <div class="entries-box">
+          <select
+            class="entries-select"
+            [(ngModel)]="pageSize"
+            (ngModelChange)="onPageSizeChange($event)"
+            name="entriesPerPage"
+          >
+            <option *ngFor="let opt of entriesOptions" [ngValue]="opt">
+              {{ opt }}
+            </option>
+          </select>
+        </div>
+        <div class="entries-text">Entries per page</div>
+      </div>
+
+      <div class="right">
+        <input
+          class="global-search"
+          type="text"
+          placeholder="Search..."
+          [(ngModel)]="globalFilter"
+          (ngModelChange)="onGlobalFilterChange($event)"
+          name="globalSearch"
+        />
+      </div>
+    </div>
+    <div class="d-flex px-1">
+      <table class="table m-3">
+        <thead>
+          <tr>
+            <!-- S.NO -->
+            <th style="width: 60px">S.No</th>
+
+            <!-- NAME -->
+            <th (click)="activateColumnSearch('name')">
+              <ng-container *ngIf="activeSearchColumn !== 'name'">
+                Name
+              </ng-container>
+
+              <div class="header-search" *ngIf="activeSearchColumn === 'name'">
+                <input
+                  type="text"
+                  placeholder="Search name"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('name', $event)"
+                  [value]="filters.name"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('name'); $event.stopPropagation()"
+                >
+                  ✕
+                </span>
+              </div>
+            </th>
+
+            <!-- SIZE -->
+            <th (click)="activateColumnSearch('size')">
+              <ng-container *ngIf="activeSearchColumn !== 'size'">
+                Size
+              </ng-container>
+
+              <div class="header-search" *ngIf="activeSearchColumn === 'size'">
+                <input
+                  type="number"
+                  placeholder="Search size"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('size', $event)"
+                  [value]="filters.size"
+                />
+                <span
+                  class="clear"
+                  (click)="clearColumnSearch('size'); $event.stopPropagation()"
+                >
+                  ✕
+                </span>
+              </div>
+            </th>
+
+            <!-- DESCRIPTION -->
+            <th (click)="activateColumnSearch('description')">
+              <ng-container *ngIf="activeSearchColumn !== 'description'">
+                Description
+              </ng-container>
+
+              <div
+                class="header-search"
+                *ngIf="activeSearchColumn === 'description'"
+              >
+                <input
+                  type="text"
+                  placeholder="Search description"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('description', $event)"
+                  [value]="filters.description"
+                />
+                <span
+                  class="clear"
+                  (click)="
+                    clearColumnSearch('description'); $event.stopPropagation()
+                  "
+                >
+                  ✕
+                </span>
+              </div>
+            </th>
+
+            <!-- STATUS -->
+            <th (click)="activateColumnSearch('status')">
+              <ng-container *ngIf="activeSearchColumn !== 'status'">
+                Status
+              </ng-container>
+
+              <div
+                class="header-search"
+                *ngIf="activeSearchColumn === 'status'"
+              >
+                <input
+                  type="text"
+                  placeholder="Search status (e.g., active)"
+                  (click)="$event.stopPropagation()"
+                  (input)="onColumnSearch('status', $event)"
+                  [value]="filters.status"
+                />
+
+                <span
+                  class="clear"
+                  (click)="
+                    clearColumnSearch('status'); $event.stopPropagation()
+                  "
+                >
+                  ✕
+                </span>
+              </div>
+            </th>
+
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let d of pagedDepartments; let i = index">
+            <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+            <td>{{ d.name }}</td>
+            <td>{{ d.size }}</td>
+            <td>{{ d.description || "-" }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="d.status === 'ACTIVE' ? 'active' : 'inactive'"
+              >
+                {{ d.status }}
+              </span>
+            </td>
+
+            <td>
+              <button class="btn btn-sm btn-edit" (click)="edit(d)">
+                Edit
+              </button>
+              <button
+                class="btn btn-sm btn-delete ms-2"
+                (click)="softDelete(d)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredDepartments.length === 0">
+            <td colspan="6" class="empty">No departments found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination (centered, bottom) -->
+    <div class="pagination-wrapper mt-3 me-3 mb-3">
+      <button class="page-btn" [disabled]="page === 1" (click)="prevPage()">
+        «
+      </button>
+
+      <button
+        class="page-number"
+        *ngFor="let p of pageNumbers"
+        [class.active]="p === page"
+        (click)="setPage(p)"
+      >
+        {{ p }}
+      </button>
+
+      <button
+        class="page-btn"
+        [disabled]="page === totalPages"
+        (click)="nextPage()"
+      >
+        »
+      </button>
+    </div>
+  </div>
+</div>

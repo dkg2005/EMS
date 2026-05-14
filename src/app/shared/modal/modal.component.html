@@ -1,0 +1,51 @@
+<!-- Modal template used by `ModalComponent`.
+  The component renders either an alert (single OK button) or a confirm
+  (Yes/Cancel). The modal is controlled by `ModalService` which calls
+  `openAlert` / `openConfirm` on the registered component instance.
+-->
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal-box" [ngClass]="{
+      'modal-box--danger': variant === 'danger',
+      'modal-box--warning': variant === 'warning',
+      'modal-box--success': variant === 'success',
+      'modal-box--info': variant === 'info'
+    }">
+
+    <div class="modal-header">
+      <div class="modal-icon" aria-hidden="true">
+        <ng-container [ngSwitch]="variant">
+          <span *ngSwitchCase="'danger'">⚠️</span>
+          <span *ngSwitchCase="'warning'">⚠</span>
+          <span *ngSwitchCase="'success'">✓</span>
+          <span *ngSwitchDefault>ℹ️</span>
+        </ng-container>
+      </div>
+
+      <div>
+        <div class="modal-title">{{ title }}</div>
+        <div class="modal-subtitle" *ngIf="type === 'confirm'">Confirm action</div>
+      </div>
+
+      <button class="modal-close" aria-label="Close" (click)="close()">✕</button>
+    </div>
+
+    <p class="modal-message">{{ message }}</p>
+
+    <div class="modal-actions">
+
+      <button *ngIf="type === 'confirm'"
+              class="btn" [ngClass]="variant === 'danger' ? 'btn-primary' : 'btn-primary'"
+              (click)="confirm()">
+        Yes
+      </button>
+
+      <button *ngIf="type === 'alert'"
+              class="btn btn-primary"
+              (click)="close()">
+        OK
+      </button>
+
+      <button class="btn btn-outline" (click)="close()">Cancel</button>
+    </div>
+  </div>
+</div>

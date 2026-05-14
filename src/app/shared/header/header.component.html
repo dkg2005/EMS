@@ -1,0 +1,63 @@
+<header class="app-header" *ngIf="user">
+  <!-- Desktop Layout -->
+  <div class="header-desktop">
+    <div class="brand">
+      <a routerLink="/dashboard">EMS</a>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+      <a routerLink="/departments" routerLinkActive="active-link">Departments</a>
+      <a routerLink="/employees" routerLinkActive="active-link">Employees</a>
+      <a routerLink="/assets" routerLinkActive="active-link">Assets</a>
+      <a routerLink="/employee-assets" routerLinkActive="active-link">Employee Assets</a>
+    </nav>
+
+    <div class="user-actions">
+      <span class="user-name">Hi, {{ user?.name || user?.email }}</span>
+      <button (click)="logout()" class="btn-logout">
+        <span>Logout</span>
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Hamburger Menu -->
+  <div class="header-mobile">
+    <div class="mobile-top">
+      <div class="brand">
+        <a routerLink="/dashboard">EMS</a>
+      </div>
+      <button class="hamburger" (click)="toggleMenu()" [class.active]="isMenuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <nav class="mobile-menu" *ngIf="isMenuOpen" [@slideDown]>
+      <a routerLink="/dashboard" (click)="closeMenu()" routerLinkActive="active-link">
+        <i class="bi bi-grid"></i> Dashboard
+      </a>
+      <a routerLink="/departments" (click)="closeMenu()" routerLinkActive="active-link">
+        <i class="bi bi-building"></i> Departments
+      </a>
+      <a routerLink="/employees" (click)="closeMenu()" routerLinkActive="active-link">
+        <i class="bi bi-people"></i> Employees
+      </a>
+      <a routerLink="/assets" (click)="closeMenu()" routerLinkActive="active-link">
+        <i class="bi bi-pc-display"></i> Assets
+      </a>
+      <a routerLink="/employee-assets" (click)="closeMenu()" routerLinkActive="active-link">
+        <i class="bi bi-person-badge"></i> Assignments
+      </a>
+      <div class="mobile-user-section">
+        <span class="user-greeting">{{ user?.name || user?.email }}</span>
+        <button (click)="logout()" class="btn-logout-mobile">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>

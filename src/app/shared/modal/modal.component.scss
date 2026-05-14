@@ -1,0 +1,206 @@
+/* ---------- MODAL BACKDROP ---------- */
+.modal-backdrop {
+  /* Styles for the modal backdrop and box. The template uses these classes
+     to position and style the modal. Beginners: adjust colors and sizes here. */
+  position: fixed;
+  inset: 0;
+  /* Darker tint with a modern glass blur effect */
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px); 
+  -webkit-backdrop-filter: blur(8px);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  /* Smooth fade-in for the backdrop */
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ---------- MODAL BOX ---------- */
+.modal-box {
+  background: var(--card-bg, #ffffff);
+  padding: 20px 22px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  box-sizing: border-box;
+  margin: 1rem;
+
+  /* Subtle lifted shadow */
+  box-shadow:
+    0 12px 30px -8px rgba(2,6,23,0.12),
+    0 6px 14px -8px rgba(2,6,23,0.06);
+
+  /* Pop-in animation */
+  animation: modalPop 0.28s cubic-bezier(0.2, 0.9, 0.25, 1);
+
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    max-width: 90%;
+    padding: 16px 18px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 95%;
+    margin: 0.5rem;
+    padding: 14px 16px;
+  }
+}
+
+/* ---------- MODAL CONTENT ---------- */
+.modal-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
+}
+
+.modal-message {
+  color: var(--muted-text, #475569);
+  margin: 12px 0 20px;
+  font-size: 15px;
+  line-height: 1.5;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    margin: 10px 0 15px;
+  }
+}
+
+.modal-close {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--muted-text, #6b7280);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.modal-close:focus {
+  outline: 2px solid rgba(0,0,0,0.06);
+}
+
+/* If you have a title inside the modal box */
+.modal-box h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ---------- MODAL ACTIONS ---------- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px; /* Consistent spacing instead of margin-left */
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+/* Ensure buttons inside modals look sharp */
+.modal-actions .btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  min-width: 84px;
+}
+
+/* Variant button styles inside modal for clarity */
+.modal-actions .btn-primary {
+  background: var(--primary, #0b6cff);
+  color: white;
+}
+
+.modal-actions .btn-outline {
+  background: transparent;
+  border: 1px solid var(--border, #e6e6e6);
+  color: var(--text, #111827);
+}
+
+/* ---------- VARIANT BARS / TYPES ---------- */
+.modal-box--success {
+  border-left: 6px solid var(--success, #2e7d32);
+}
+
+.modal-box--warning {
+  border-left: 6px solid var(--warning, #f59e0b);
+}
+
+.modal-box--danger {
+  border-left: 6px solid var(--danger, #dc2626);
+}
+
+.modal-box--info {
+  border-left: 6px solid var(--primary, #0b6cff);
+}
+
+/* Tinted icon backgrounds for each variant */
+.modal-box--success .modal-icon { background: rgba(46,125,50,0.08); color: var(--success, #2e7d32); }
+.modal-box--warning .modal-icon { background: rgba(245,158,11,0.08); color: var(--warning, #f59e0b); }
+.modal-box--danger  .modal-icon { background: rgba(220,38,38,0.08); color: var(--danger, #dc2626); }
+.modal-box--info    .modal-icon { background: rgba(11,108,255,0.08); color: var(--primary, #0b6cff); }
+
+/* Small responsive adjustments */
+@media (max-width: 520px) {
+  .modal-box { padding: 16px; border-radius: 10px; max-width: 94%; }
+  .modal-icon { width: 36px; height: 36px; font-size: 16px; }
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95) translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
+}

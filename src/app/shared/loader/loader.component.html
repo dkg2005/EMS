@@ -1,0 +1,8 @@
+<!-- Loader template: simple overlay with spinner and message. The component
+  displays this while `visible` is true. -->
+<div class="loader-backdrop" *ngIf="visible">
+  <div class="loader-box">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="loader-message">{{ message }}</div>
+  </div>
+</div>

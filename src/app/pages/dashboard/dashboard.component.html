@@ -1,0 +1,66 @@
+<section class="dashboard-container">
+
+  <div class="welcome-header">
+    <div class="text-content">
+      <h1>Dashboard</h1>
+      <p>Welcome back, <span class="highlight">{{ user?.name || user?.email }}</span></p>
+    </div>
+    <div class="date-badge">
+      <i class="bi bi-calendar3"></i>
+      {{ now | date:'fullDate' }}
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <a *ngFor="let stat of stats" [routerLink]="stat.link" class="stat-card" [ngClass]="stat.bgClass">
+      <div class="card-icon-wrapper">
+        <i class="bi" [ngClass]="stat.icon"></i>
+      </div>
+      <div class="card-info">
+        <h3>{{ stat.title }}</h3>
+        <p class="count">{{ stat.value }}</p>
+      </div>
+      <div class="card-arrow">
+        <i class="bi bi-arrow-right"></i>
+      </div>
+    </a>
+  </div>
+
+  <div class="actions-section">
+    <h3>Quick Actions</h3>
+    <div class="actions-grid">
+      <button class="action-card" routerLink="/employees">
+        <div class="icon-box blue"><i class="bi bi-person-plus-fill"></i></div>
+        <div class="action-text">
+          <span class="title">Add Employee</span>
+          <span class="desc">Onboard new staff</span>
+        </div>
+      </button>
+
+      <button class="action-card" routerLink="/assets">
+        <div class="icon-box green"><i class="bi bi-pc-display"></i></div>
+        <div class="action-text">
+          <span class="title">Add Asset</span>
+          <span class="desc">Register hardware</span>
+        </div>
+      </button>
+
+      <button class="action-card" routerLink="/departments">
+        <div class="icon-box purple"><i class="bi bi-building-add"></i></div>
+        <div class="action-text">
+          <span class="title">New Department</span>
+          <span class="desc">Create org unit</span>
+        </div>
+      </button>
+
+      <button class="action-card" routerLink="/employee-assets">
+        <div class="icon-box orange"><i class="bi bi-box-seam-fill"></i></div>
+        <div class="action-text">
+          <span class="title">Assign Asset</span>
+          <span class="desc">Equip an employee</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+</section>
