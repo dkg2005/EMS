@@ -1,0 +1,1283 @@
+# Detailed Summary of Your Work and Usage So Far
+
+## Overall Focus Areas
+
+You have mainly been using ChatGPT for:
+
+* Backend development with Spring Boot
+* PostgreSQL query writing and optimization
+* Angular frontend development
+* API integration and debugging
+* Database design and architecture
+* Debugging production-like issues
+* Learning software engineering concepts
+* Git/GitLab setup and development workflows
+
+Your work has been heavily centered around an Employee Management / Logistics-style enterprise application with modules involving employees, transporters, red passes, assets, documents, alerts, and dashboard systems.
+
+---
+
+# 1. Backend Development Work (Spring Boot)
+
+## Main Stack
+
+You have been working with:
+
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* PostgreSQL
+* REST APIs
+* DTO-based architecture
+* Native SQL queries
+
+You are gradually moving beyond beginner-level CRUD development into more complex enterprise backend logic.
+
+---
+
+# 2. Employee Management System Architecture
+
+You designed and discussed an Employee Management System architecture with:
+
+## Core Tables
+
+### Employee
+
+Fields included:
+
+* id
+* name
+* email
+* password
+* DOJ (Date of Joining)
+* status
+* dept_id (FK)
+* role_id (FK)
+
+### Department
+
+Fields:
+
+* id
+* name
+* size
+* description
+
+### Role
+
+Fields:
+
+* id
+* name
+
+---
+
+# 3. Asset Module Planning
+
+You planned an Asset Management module involving:
+
+## Asset Table
+
+Fields:
+
+* id
+* assetName
+* assetCode (unique)
+
+## Employee–Asset Mapping Table
+
+Designed for:
+
+* Many-to-many relationship
+* Asset assignment tracking
+* Asset return tracking
+* Assignment status
+* Assigned date
+* Return date
+
+This showed that you are thinking in terms of scalable relational database design rather than only basic CRUD.
+
+---
+
+# 4. Department Module Architecture
+
+You created a custom architecture for the Department module.
+
+## Key Design Decisions
+
+You implemented:
+
+* A single save endpoint for:
+
+  * CREATE
+  * UPDATE
+  * SOFT DELETE
+
+Instead of separate APIs.
+
+### DTO Structure
+
+You used:
+
+* DepartmentRequestDTO
+  Containing:
+* id
+* status
+* other department fields
+
+### Logic Style
+
+Service method logic branches based on:
+
+* id existence
+* status values
+
+### Query Style
+
+You also used:
+
+* Custom repository queries
+* `List<Map<String, Object>>`
+  for dynamic responses.
+
+This indicates you are comfortable with flexible API response structures.
+
+---
+
+# 5. PostgreSQL Query Development
+
+A major portion of your work has involved PostgreSQL.
+
+You worked extensively with:
+
+* Complex WHERE clauses
+* Conditional filters
+* Dynamic query handling
+* Joins
+* CTEs (`WITH` queries)
+* DISTINCT ON
+* Date operations
+* Enum casting
+* Aggregation logic
+* Expiry date calculations
+
+---
+
+# 6. Dynamic Filter Handling
+
+You explored how to handle optional filters.
+
+Example:
+
+```sql
+WHERE (t.stageId = :stageId)
+```
+
+You wanted logic where:
+
+* If `stageId` is null → fetch all data
+* Else → apply filter
+
+This is a very common enterprise API requirement.
+
+---
+
+# 7. Enum Mapping & Hibernate Issues
+
+You worked on:
+
+* PostgreSQL enum handling
+* Hibernate enum mapping
+* Native query enum casting
+
+Example:
+
+```sql
+:status::red_pass_status
+```
+
+You debugged issues involving:
+
+* Native queries
+* Parameter binding
+* PostgreSQL enum conversion
+* Hibernate compatibility
+
+---
+
+# 8. Expiry Date & Date Comparison Logic
+
+You spent significant time handling expiry logic.
+
+## Topics Covered
+
+* Minimum expiry date extraction
+* LocalDate handling
+* Object/date comparisons
+* PostgreSQL date arithmetic
+* Expired record filtering
+* Formatting expiry information
+
+Example logic:
+
+```sql
+(current_date - irp.expiry_date) as daysExpired
+```
+
+You also worked on:
+
+* `min_expiry_info`
+* Mapping LocalDate into `Map<String,Object>`
+* Type compatibility concerns
+
+---
+
+# 9. Complex CTE-Based Document Queries
+
+You worked on advanced SQL involving:
+
+## Common Table Expressions (CTEs)
+
+Example:
+
+```sql
+WITH required_docs AS (...)
+```
+
+You implemented logic for:
+
+* Required document identification
+* Document expiry extraction
+* JSON value extraction
+* Vehicle documents
+* Driver documents
+
+Document types included:
+
+* Vehicle RC
+* Vehicle Insurance
+* Vehicle POC
+* Driver License
+
+This indicates intermediate-to-advanced PostgreSQL query understanding.
+
+---
+
+# 10. Red Pass Module Work
+
+A large portion of your work revolved around a Red Pass system.
+
+## Areas Worked On
+
+* Red pass dashboard APIs
+* Red pass expiry handling
+* Red pass details APIs
+* Enum statuses
+* Expired pass filtering
+* Plant-based filtering
+* Status-based filtering
+
+You also handled:
+
+* `modified_at` date filtering
+* Dynamic conditions
+* Dashboard list APIs
+
+---
+
+# 11. API Error Debugging
+
+You debugged several backend/API issues.
+
+## Example
+
+You investigated:
+
+```text
+500 Internal Server Error
+```
+
+For APIs such as:
+
+* alert/tickets/dashboard APIs
+* red pass APIs
+
+You worked on:
+
+* SQL syntax debugging
+* Null handling
+* Parameter issues
+* Conditional query logic
+
+---
+
+# 12. Angular Frontend Work
+
+You also worked on Angular frontend development.
+
+## Topics Covered
+
+* Components
+* Data binding
+* Input passing
+* Event handling
+* Bootstrap integration
+* Dynamic rendering
+* Modal handling
+
+---
+
+# 13. Angular Component Communication
+
+You discussed passing data into components.
+
+Example:
+
+```html
+<app-red-card-modal rowId="{this.txnid}"></app-red-card-modal>
+```
+
+You explored:
+
+* `@Input()` usage
+* Dynamic property binding
+* Component communication patterns
+
+---
+
+# 14. UI / Button Issues
+
+You worked on frontend UI debugging.
+
+Examples included:
+
+* Search button visibility
+* Bootstrap icon rendering
+* Button styling
+* Alignment issues
+
+Example:
+
+```html
+<button class="btn btn-primary">
+  <i class="bi bi-search"></i> Search
+</button>
+```
+
+---
+
+# 15. Transporter Restriction Queries
+
+You developed advanced filtering queries involving:
+
+* Transporters
+* Restrictions
+* Company-level filters
+* Plant-level filters
+* Ban logic
+
+Example concepts:
+
+* hide_banned flag
+* conditional joins
+* nullable company/plant conditions
+
+This involved fairly advanced SQL condition handling.
+
+---
+
+# 16. Learning Software Engineering Concepts
+
+You also used ChatGPT for conceptual learning.
+
+## Topics Learned
+
+### N+1 Problem
+
+You asked for:
+
+* Beginner explanation
+* Real-world understanding
+* Simplified examples
+
+This indicates you are actively improving your backend/system design understanding.
+
+---
+
+# 17. Git & GitLab Workflow
+
+You asked about:
+
+* SSH key setup
+* GitLab authentication
+* Local machine integration
+
+This shows you are also improving your DevOps/developer workflow knowledge.
+
+---
+
+# 18. Development Style Observed
+
+Your development style generally includes:
+
+* Iterative debugging
+* Practical implementation focus
+* Enterprise application patterns
+* SQL-heavy backend work
+* Real-world API handling
+* Flexible query architecture
+* Dynamic filtering systems
+
+You tend to:
+
+* Build first
+* Debug deeply afterward
+* Optimize incrementally
+* Ask implementation-oriented questions
+
+---
+
+# 19. Technical Growth Level
+
+Based on the conversations, your growth path looks like:
+
+## Strong Areas
+
+* SQL writing
+* Backend business logic
+* Native query handling
+* API debugging
+* Dynamic filtering
+* Enterprise CRUD patterns
+
+## Growing Areas
+
+* Hibernate internals
+* Angular architecture
+* Clean architecture patterns
+* Query optimization
+* Advanced Spring concepts
+
+## Concepts You Are Gradually Moving Into
+
+* Performance optimization
+* System design thinking
+* Reusable architecture
+* Modular backend design
+* Relationship modeling
+
+---
+
+# 20. Overall Progress Summary
+
+You are transitioning from:
+
+### Beginner CRUD Development
+
+Toward:
+
+### Enterprise Backend Development
+
+Especially in:
+
+* Spring Boot
+* PostgreSQL
+* Angular integration
+* Complex query handling
+* Dynamic APIs
+* Dashboard systems
+
+Your recent work already includes many real-world backend engineering problems such as:
+
+* Soft delete architectures
+* Dynamic SQL
+* Expiry workflows
+* Enum mapping
+* Many-to-many relationships
+* Dashboard aggregation
+* Conditional filtering
+* Native query optimization
+* Frontend-backend integration
+
+This is significantly beyond simple tutorial-level development.
+
+---
+
+# Main Technologies You Have Worked With
+
+## Backend
+
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* REST APIs
+
+## Database
+
+* PostgreSQL
+* Native SQL
+* CTEs
+* Joins
+* Dynamic filtering
+
+## Frontend
+
+* Angular
+* Bootstrap
+* TypeScript
+
+## Tools
+
+* Git
+* GitLab
+* SSH
+
+---
+
+# Common Themes Across Your Work
+
+Your discussions repeatedly focused on:
+
+* Dynamic queries
+* Expiry management
+* Dashboard APIs
+* Reusable backend patterns
+* Frontend integration
+* Real-world debugging
+* Database-driven logic
+* Conditional business rules
+
+---
+
+# Conclusion
+
+Your usage history shows a strong focus on practical software engineering and backend-heavy enterprise application development.
+
+You have already worked with:
+
+* Complex SQL
+* Dynamic APIs
+* Multi-module backend systems
+* Angular integration
+* Database relationship design
+* Production-style debugging
+
+Most of your recent growth is happening in:
+
+* Query optimization
+* Cleaner architecture
+* Better abstraction handling
+* Advanced SQL logic
+* Backend/frontend coordination
+
+You are building experience very similar to what is encountered in actual business applications rather than only academic examples.
+
+
+# Detailed Contribution Documentation – CPL Project Work Summary
+
+## Purpose of This Document
+
+This document summarizes the technical contributions, development work, debugging efforts, architectural involvement, and implementation responsibilities handled during work on the CPL project.
+
+It is intended to serve as:
+
+* A professional contribution summary
+* A technical handover reference
+* A personal record of engineering work completed
+* A supporting document for future career discussions and interviews
+
+---
+
+# 1. Overall Role & Area of Involvement
+
+The work contributed covered multiple layers of the application stack including:
+
+## Backend Development
+
+* Spring Boot API development
+* Business logic implementation
+* PostgreSQL query development
+* Native SQL optimization
+* Dynamic filtering systems
+* Dashboard data aggregation
+* Expiry and status workflows
+
+## Database Engineering
+
+* Query design
+* Complex joins
+* CTE-based reporting queries
+* Enum handling
+* Date calculations
+* Relational data modeling
+* Many-to-many mapping logic
+
+## Frontend Support
+
+* Angular component integration
+* Data binding fixes
+* Modal integration
+* UI troubleshooting
+* Dynamic rendering support
+
+## Debugging & Production Support
+
+* API error debugging
+* SQL syntax fixes
+* Data inconsistency investigation
+* Query correction
+* Frontend/backend coordination
+* Runtime issue handling
+
+---
+
+# 2. Backend API Development Contributions
+
+A significant portion of the work involved backend API implementation and debugging using:
+
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* REST APIs
+* PostgreSQL
+
+---
+
+# 3. Dynamic CRUD Architecture Contribution
+
+One important contribution involved implementing a flexible CRUD architecture pattern.
+
+## Department Module Design
+
+Instead of separate APIs for:
+
+* Create
+* Update
+* Delete
+
+A unified save endpoint approach was implemented.
+
+### Features of the Approach
+
+* Single endpoint handling multiple operations
+* DTO-driven decision logic
+* Soft delete support
+* Reduced controller redundancy
+* Centralized validation and branching logic
+
+### Business Benefits
+
+* Cleaner API structure
+* Easier frontend integration
+* Reduced duplicate logic
+* Simplified maintenance
+* Faster enhancement handling
+
+---
+
+# 4. Soft Delete Workflow Contribution
+
+Implemented and worked extensively with:
+
+* Status-based soft delete logic
+* Dynamic record activation/deactivation
+* Conditional update handling
+
+Instead of permanently deleting data:
+
+* Status flags were used
+* Historical records remained preserved
+* Safer enterprise data handling was enabled
+
+This is an important enterprise-grade implementation pattern.
+
+---
+
+# 5. Advanced PostgreSQL Query Development
+
+One of the strongest contribution areas was SQL development.
+
+## Areas Worked On
+
+* Native SQL queries
+* Complex joins
+* Conditional filtering
+* Dynamic WHERE clauses
+* Enum casting
+* Date operations
+* Aggregation queries
+* Dashboard queries
+* Performance-oriented filtering
+* DISTINCT ON usage
+* CTE-based logic
+
+---
+
+# 6. Dynamic Filter Handling System
+
+Implemented and debugged multiple APIs requiring optional filters.
+
+## Example Scenarios
+
+* Filter only when parameter exists
+* Return all data when parameter is null
+* Conditional status filtering
+* Plant-level filtering
+* Company-level filtering
+* Date-based filtering
+
+### Business Importance
+
+This enabled:
+
+* Reusable APIs
+* Flexible dashboards
+* Better search functionality
+* Reduced API duplication
+
+---
+
+# 7. Enum Handling & Hibernate Integration
+
+Worked extensively on:
+
+* PostgreSQL enums
+* Hibernate enum mapping
+* Native query compatibility
+* Parameter casting issues
+
+## Example Contribution Areas
+
+* Correct enum casting in native queries
+* Preventing query failures
+* Handling status-based APIs safely
+
+This helped stabilize backend query execution involving enum columns.
+
+---
+
+# 8. Red Pass Module Contributions
+
+A major portion of the contribution was related to the Red Pass workflow.
+
+## Areas Contributed
+
+* Red pass dashboard APIs
+* Expiry handling logic
+* Expired pass filtering
+* Status-based query filtering
+* Plant-based filtering
+* Dashboard aggregation
+* Date validation logic
+* API debugging
+
+---
+
+# 9. Expiry Management Logic
+
+Implemented and debugged logic involving:
+
+* Expiry dates
+* Minimum expiry detection
+* Expired record identification
+* Remaining validity calculations
+* Dashboard display information
+
+## Key Technical Areas
+
+* PostgreSQL date arithmetic
+* LocalDate handling
+* Object/date comparisons
+* Dynamic expiry summary generation
+
+### Example Features
+
+* Calculating days expired
+* Finding nearest expiry document
+* Generating expiry information dynamically
+
+These were important for compliance and operational visibility.
+
+---
+
+# 10. Dashboard Query Contributions
+
+Worked extensively on ticket dashboard and operational dashboard APIs involving:
+
+* Ticket dashboard list APIs
+* Alert dashboard integrations
+* Dynamic ticket filtering
+* Ticket status aggregation
+* Dashboard visibility logic
+* Operational reporting APIs
+* Real-time list retrieval workflows
+* Conditional dashboard rendering support
+
+## Ticket Dashboard Contributions
+
+A dedicated area of contribution involved backend handling and debugging for ticket dashboard systems.
+
+### Areas Worked On
+
+* Ticket dashboard API integration
+* Dashboard list retrieval queries
+* Alert/ticket API debugging
+* Status-wise ticket filtering
+* Dynamic query handling
+* Dashboard response structuring
+* Backend filtering corrections
+* Runtime issue investigation
+
+### Key Technical Work
+
+Worked on:
+
+* Native SQL queries for dashboard retrieval
+* Conditional WHERE clause handling
+* Date-based dashboard filtering
+* Status filtering
+* Plant-specific dashboard visibility
+* API parameter handling
+* Null-condition validation
+* Query correction and stabilization
+
+### Debugging & Stabilization
+
+Handled issues involving:
+
+* 500 Internal Server Errors
+* Invalid SQL conditions
+* Broken dashboard queries
+* Query parameter mismatches
+* Expiry-related dashboard failures
+* Incorrect API responses
+
+### Business Impact
+
+These contributions supported:
+
+* Better operational visibility
+* Improved dashboard reliability
+* More accurate ticket tracking
+* Stable dashboard API performance
+* Flexible ticket filtering workflows
+
+## Additional Dashboard Responsibilities
+
+Worked on multiple dashboard-related APIs involving:
+
+* Dynamic summaries
+* Filtered counts
+* Expiry visibility
+* Ticket/dashboard list retrieval
+* Status aggregation
+* Conditional visibility logic
+
+### Responsibilities Included
+
+* SQL optimization
+* Dynamic condition handling
+* Correct filtering implementation
+* Data consistency validation
+* Backend/frontend response coordination
+
+Worked on multiple dashboard-related APIs involving:
+
+* Dynamic summaries
+* Filtered counts
+* Expiry visibility
+* Ticket/dashboard list retrieval
+* Status aggregation
+* Conditional visibility logic
+
+### Responsibilities Included
+
+* SQL optimization
+* Dynamic condition handling
+* Correct filtering implementation
+* Data consistency validation
+* Backend/frontend response coordination
+
+---
+
+# 11. Complex CTE-Based Reporting Queries
+
+Implemented advanced PostgreSQL query structures using:
+
+## Common Table Expressions (CTEs)
+
+Worked on:
+
+* Required document extraction
+* Expiry report generation
+* Document validation workflows
+* Structured reporting queries
+
+### Document Categories Handled
+
+* Vehicle RC
+* Vehicle Insurance
+* Vehicle POC
+* Driver License
+
+### Technical Areas
+
+* DISTINCT ON
+* JSON extraction
+* Date conversion
+* Nested query logic
+* Conditional joins
+
+These contributions improved structured reporting and operational visibility.
+
+---
+
+# 12. Transporter Restriction & Filtering Logic
+
+Implemented and debugged transporter restriction logic.
+
+## Key Features Worked On
+
+* Plant-level restrictions
+* Company-level restrictions
+* Global restrictions
+* Hide banned logic
+* Dynamic filtering rules
+
+### Technical Complexity
+
+Handled conditions involving:
+
+* Nullable company IDs
+* Nullable plant IDs
+* Conditional OR filtering
+* Dynamic restriction resolution
+
+This contributed toward access control and operational validation workflows.
+
+---
+
+# 13. Angular Frontend Contributions
+
+Provided frontend-level support and implementation for Angular-based modules.
+
+## Areas Worked On
+
+* Component communication
+* Dynamic data binding
+* UI rendering fixes
+* Bootstrap integration
+* Modal integration
+* Event handling
+* Input parameter binding
+
+---
+
+# 14. Modal & Component Integration
+
+Worked on:
+
+* Passing transaction IDs into components
+* Dynamic modal loading
+* Angular Input binding
+* Component reuse patterns
+
+### Example Contribution
+
+Integration approaches for:
+
+* Red card modal rendering
+* Row-specific component loading
+* Dynamic content injection
+
+---
+
+# 15. UI Debugging & Frontend Stabilization
+
+Resolved frontend issues involving:
+
+* Search button visibility
+* Bootstrap icon rendering
+* Layout alignment
+* Dynamic element rendering
+* Button display inconsistencies
+
+### Impact
+
+Improved:
+
+* UI consistency
+* User interaction flow
+* Dashboard usability
+* Frontend reliability
+
+---
+
+# 16. API Error Investigation & Resolution
+
+Handled multiple runtime and production-style issues.
+
+## Types of Issues Resolved
+
+* 500 Internal Server Errors
+* SQL syntax issues
+* Query parameter problems
+* Null handling failures
+* Incorrect filtering logic
+* Enum conversion failures
+* Date comparison bugs
+
+### Contribution Style
+
+* Root cause analysis
+* Incremental debugging
+* Query correction
+* Response validation
+* Cross-layer troubleshooting
+
+---
+
+# 17. Backend–Frontend Coordination
+
+Worked on integration consistency between:
+
+* Angular frontend
+* Spring Boot backend
+* PostgreSQL data layer
+
+## Key Contribution Areas
+
+* Response structure handling
+* Dynamic object mapping
+* DTO coordination
+* Query response shaping
+* Frontend compatibility fixes
+
+This reduced integration mismatches and runtime UI issues.
+
+---
+
+# 18. Enterprise Query Pattern Contributions
+
+Implemented enterprise-style query logic involving:
+
+* Dynamic optional filters
+* Flexible status handling
+* Date-range filtering
+* Multi-condition visibility
+* Dashboard aggregation
+* Cross-table filtering
+
+This moved the application beyond basic CRUD patterns into more business-oriented data handling.
+
+---
+
+# 19. Database Design & Relationship Thinking
+
+Contributed toward structured relational design thinking.
+
+## Areas Demonstrated
+
+* Foreign key relationships
+* Many-to-many mapping concepts
+* Asset assignment planning
+* Status-driven entities
+* Document mapping systems
+* Relationship normalization
+
+This showed understanding of scalable backend architecture patterns.
+
+---
+
+# 20. Performance & Optimization Thinking
+
+Although much of the work focused on functionality, contributions also involved:
+
+* Query simplification
+* Reusable filtering logic
+* Reduction of duplicate APIs
+* Efficient conditional querying
+* Cleaner backend branching
+
+This improved maintainability and future extensibility.
+
+---
+
+# 21. Ownership & Working Style Observed
+
+The work pattern consistently demonstrated:
+
+## Technical Ownership
+
+* Deep debugging involvement
+* End-to-end issue tracing
+* Backend and frontend coordination
+* Query correction ownership
+* Production issue handling
+
+## Engineering Approach
+
+* Iterative debugging
+* Practical implementation focus
+* Business-rule-driven development
+* Flexible query building
+* Enterprise workflow adaptation
+
+---
+
+# 22. Technologies & Tools Used
+
+## Backend
+
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* REST APIs
+
+## Database
+
+* PostgreSQL
+* Native SQL
+* CTEs
+* Dynamic filtering
+* Enum handling
+
+## Frontend
+
+* Angular
+* TypeScript
+* Bootstrap
+
+## Tools & Workflow
+
+* Git
+* GitLab
+* SSH setup
+
+---
+
+# 23. Business-Level Impact of Contributions
+
+The contributions collectively supported:
+
+* Dashboard functionality
+* Operational visibility
+* Expiry compliance tracking
+* Restriction management
+* Dynamic reporting
+* Flexible filtering systems
+* Improved API maintainability
+* Frontend stability
+* Production issue resolution
+
+---
+
+# 24. Engineering Maturity Demonstrated
+
+The work completed demonstrated experience with:
+
+* Enterprise CRUD architecture
+* Production debugging
+* Complex SQL handling
+* Dynamic APIs
+* Relational database logic
+* Backend/frontend integration
+* Status-driven workflows
+* Expiry management systems
+* Query optimization thinking
+
+---
+
+# 25. Overall Contribution Summary
+
+Overall contributions to the CPL project involved:
+
+## Backend Engineering
+
+* API development
+* Business logic implementation
+* Query development
+* Dynamic filtering systems
+* Dashboard logic
+
+## Database Engineering
+
+* Advanced PostgreSQL queries
+* Expiry calculations
+* CTE-based reports
+* Enum handling
+* Relational logic
+
+## Frontend Support
+
+* Angular integration
+* UI fixes
+* Modal integration
+* Component communication
+
+## Production Support
+
+* Runtime debugging
+* Error fixing
+* Query stabilization
+* Integration troubleshooting
+
+---
+
+# Final Summary
+
+The overall contribution was heavily focused on solving practical enterprise application problems involving:
+
+* Dynamic backend workflows
+* Complex PostgreSQL logic
+* Dashboard systems
+* Expiry tracking
+* Restriction systems
+* Angular integration
+* API debugging
+* Flexible business-rule implementation
+
+The work reflected strong hands-on involvement in both development and debugging across multiple layers of the application stack.
+
+The contributions were not limited to simple CRUD operations; they included real-world backend engineering patterns, operational logic implementation, and production-style issue resolution commonly seen in enterprise software systems.
+Employee Management Module
+Department Module
+Role Management Module
+Asset Management Module
+Employee–Asset Mapping Workflow
+Red Pass Dashboard
+Red Pass Details Page
+Red Card Modal Component
+Ticket Dashboard
+Alert/Ticket Dashboard APIs
+Expiry Tracking Dashboard
+Document Expiry Management System
+Vehicle Document Validation Module
+Driver Document Validation Module
+Transporter Restriction Module
+Transporter Filtering System
+Dashboard Aggregation APIs
+Dynamic Search & Filter Components
+Search Button/UI Components
+Angular Modal Components
+Angular Input Binding Components
+Status-Based Filtering APIs
+Plant-Level Filtering Workflows
+Company-Level Restriction Workflows
+Expired Pass Handling System
+Dashboard List Retrieval APIs
+Alert Management APIs
+Conditional Query Filtering System
+Enum-Based Status Management
+Date & Expiry Calculation Logic
+Soft Delete Workflow System
+Dynamic CRUD APIs
+PostgreSQL Reporting Queries
+CTE-Based Reporting Logic
+API Error Handling & Debugging Layer
+Backend–Frontend Integration Layer
+GitLab SSH Setup & Development Workflow
